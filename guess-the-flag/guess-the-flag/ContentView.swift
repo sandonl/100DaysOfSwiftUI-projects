@@ -15,7 +15,7 @@ struct ContentView: View {
     
     @State private var showingScore = false // boolean for alert
     @State private var scoreTitle = ""
-    @State private var userScore = 0
+    @State private var userScore = 0    
     @State private var scoreMessage = ""
     
     var body: some View {
