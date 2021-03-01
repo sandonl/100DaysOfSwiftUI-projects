@@ -16,7 +16,6 @@ struct ContentView: View {
     @State private var alertMessage = ""
     @State private var showingAlert = false
     
-    
     init () {
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
     }
@@ -32,58 +31,63 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                     .offset(y: 420)
                     
-                
-                    VStack (spacing: 30){
+                VStack (spacing: 30){
+                    VStack {
+                        // Date Picker and time
+                        Text("When do you want to wake up?")
+                            .font(.headline)
 
-                            // Date Picker and time
-                            Text("When do you want to wake up?")
-                                .font(.headline)
-
-                            DatePicker("Please enter a time",
-                                       selection: $wakeUp,
-                                       displayedComponents:
-                                        .hourAndMinute)
-                                .labelsHidden()
-                                .datePickerStyle(WheelDatePickerStyle())
-                
-                            
-                            Text("Desired amount of sleep")
-                                .font(.headline)
-                            
-                            Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
-                                Text("\(sleepAmount, specifier: "%g") hours")
-                            }.frame(width: 200, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        
-
-                            // Coffee Intake
-                            Group {
-                                Text("Daily coffee intake")
-                                    .font(.headline)
-                                
-                                Stepper(value: $coffeeAmount, in: 1...20) {
-                                    if coffeeAmount == 1 {
-                                        Text("1 Cup")
-                                    } else {
-                                        Text("\(coffeeAmount) Cups")
-                                    }
-                                }.frame(width: 180, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                            }
-                        
-                        Button(action: calculateBedTime) {
-                            Text("Calculate")
-                        }.font(.title2)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.init(red: 233/255, green: 196/255, blue: 106/255))
-                        .cornerRadius(20)
-                        
-                        
+                        DatePicker("Please enter a time",
+                                   selection: $wakeUp,
+                                   displayedComponents:
+                                    .hourAndMinute)
+                            .labelsHidden()
+                            .datePickerStyle(WheelDatePickerStyle())
                     }
+                    
+                    VStack (spacing: 30) {
+                        Text("Desired amount of sleep")
+                            .font(.headline)
+                        
+                        Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
+                            Text("\(sleepAmount, specifier: "%g") hours")
+                        }.frame(width: 200, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    }
+                    
+                    VStack (spacing: 30){
+                        Group {
+                            Text("Daily coffee intake")
+                                .font(.headline)
+                            
+                            Stepper(value: $coffeeAmount, in: 1...20) {
+                                if coffeeAmount == 1 {
+                                    Text("1 Cup")
+                                } else {
+                                    Text("\(coffeeAmount) Cups")
+                                }
+                            }.frame(width: 180, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+
+                        }
+                        
+                        // Challenge: Remove the Button and display as text
+                        
+                        HorizontalText(text: "Your recommended bedtime is: ", textResult: calculateBedTime())
+                    
+//                        Button(action: calculateBedTime) {
+//                            Text("Calculate")
+//                        }.font(.title2)
+//                        .foregroundColor(.white)
+//                        .padding()
+//                        .background(Color.init(red: 233/255, green: 196/255, blue: 106/255))
+//                        .cornerRadius(20)
+                    }
+                }
+                
                     // Colors for the design
                     .foregroundColor(Color.init(red: 241/255, green: 250/255, blue: 238/255))
-                    .alert(isPresented: $showingAlert) {
-                        Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: (.default(Text("OK"))))
-                }
+//                    .alert(isPresented: $showingAlert) {
+//                        Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: (.default(Text("OK"))))
+//                }
             }
             .navigationBarTitle(Text("Rest Up"))
             .ignoresSafeArea()
@@ -99,7 +103,7 @@ struct ContentView: View {
         return Calendar.current.date(from: components) ?? Date()
     }
     
-    func calculateBedTime() {
+    func calculateBedTime() -> String {
         // Created from CoreML
         // Model utilises four variables in wake, estimatedSleep, coffee and actualSleep to make predictions
         let model = SleepCalculator()
@@ -116,16 +120,34 @@ struct ContentView: View {
             let formatter = DateFormatter()
             formatter.timeStyle = .short
             
-            alertMessage = formatter.string(from: sleepTime)
-            alertTitle = "Your ideal bedtime is..."
+//            alertMessage = formatter.string(from: sleepTime)
+//            alertTitle = "Your ideal bedtime is..."
+            return formatter.string(from: sleepTime)
         } catch {
-            alertTitle = "Error"
-            alertMessage = "Sorry, there was a problem calculating your bedtime."
-            // something went wrong!
+//            alertTitle = "Error"
+//            alertMessage = "Sorry, there was a problem calculating your bedtime."
+            return "Sorry, there was a problem calculating your bedtime."
         }
         
-        showingAlert = true
-        
+//        showingAlert = true
+    }
+}
+
+struct HorizontalText: View {
+    var text: String
+    var textResult: String
+    
+    var body: some View {
+        HStack {
+            Text(text)
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                .frame(width: 200, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                
+            Text(textResult)
+                .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+            
+        }
     }
 }
 
