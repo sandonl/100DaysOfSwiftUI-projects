@@ -11,6 +11,7 @@
 		9754970625EB7B5F002FBBD7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9754970525EB7B5F002FBBD7 /* ContentView.swift */; };
 		9754970825EB7B60002FBBD7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9754970725EB7B60002FBBD7 /* Assets.xcassets */; };
 		9754970B25EB7B60002FBBD7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9754970A25EB7B60002FBBD7 /* Preview Assets.xcassets */; };
+		9754972125EC73CB002FBBD7 /* SleepCalculator.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9754972025EC73CB002FBBD7 /* SleepCalculator.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		9754970725EB7B60002FBBD7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9754970A25EB7B60002FBBD7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9754970C25EB7B60002FBBD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9754972025EC73CB002FBBD7 /* SleepCalculator.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SleepCalculator.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 				9754970525EB7B5F002FBBD7 /* ContentView.swift */,
 				9754970725EB7B60002FBBD7 /* Assets.xcassets */,
 				9754970C25EB7B60002FBBD7 /* Info.plist */,
+				9754972025EC73CB002FBBD7 /* SleepCalculator.mlmodel */,
 				9754970925EB7B60002FBBD7 /* Preview Content */,
 			);
 			path = "rest-up";
@@ -139,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9754970625EB7B5F002FBBD7 /* ContentView.swift in Sources */,
+				9754972125EC73CB002FBBD7 /* SleepCalculator.mlmodel in Sources */,
 				9754970425EB7B5F002FBBD7 /* rest_upApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
