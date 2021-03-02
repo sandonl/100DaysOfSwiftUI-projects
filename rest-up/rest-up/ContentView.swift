@@ -33,6 +33,7 @@ struct ContentView: View {
                     
                 VStack (spacing: 30){
                     VStack {
+                        Spacer()
                         // Date Picker and time
                         Text("When do you want to wake up?")
                             .font(.headline)
@@ -68,9 +69,7 @@ struct ContentView: View {
                             }.frame(width: 180, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
 
                         }
-                        
                         // Challenge: Remove the Button and display as text
-                        
                         HorizontalText(text: "Your recommended bedtime is: ", textResult: calculateBedTime())
                     
 //                        Button(action: calculateBedTime) {
@@ -81,6 +80,7 @@ struct ContentView: View {
 //                        .background(Color.init(red: 233/255, green: 196/255, blue: 106/255))
 //                        .cornerRadius(20)
                     }
+                    Spacer()
                 }
                 
                     // Colors for the design
