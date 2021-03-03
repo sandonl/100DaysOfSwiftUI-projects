@@ -20,7 +20,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.blue, .black]), startPoint: .top, endPoint: .bottom).edgesIgnoringSafeArea(.all)
+            LinearGradient(gradient: Gradient(colors: [.yellow, .red]), startPoint: .topLeading, endPoint: .bottom).edgesIgnoringSafeArea(.all)
             
             VStack (spacing: 30) {
                 VStack {
@@ -36,17 +36,14 @@ struct ContentView: View {
                     Button(action: {
                         self.flagTapped(number)
                     }) {
-                        Image(self.countries[number])
-                            .renderingMode(.original)
-                            .clipShape(Capsule())
-                            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
-                            .shadow(color: /*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/, radius: 2)
+                        FlagImage(image: self.countries[number])
                     }
                 }
                 Text("Current Score: \(userScore)")
-                    .foregroundColor(.white)
-                    .font(.headline)
-                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                    .BlueTitle()
+//                    .foregroundColor(.white)
+//                    .font(.headline)
+//                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 
                 Spacer()
                 
@@ -68,7 +65,7 @@ struct ContentView: View {
             scoreMessage = "You got it right!"
         } else {
             scoreTitle = "Wrong"
-            scoreMessage = "Wrong! that's the flag of \(countries[correctAnswer])"
+            scoreMessage = "Wrong! that's the flag of \(countries[number])"
         }
         showingScore = true
     }
@@ -78,6 +75,43 @@ struct ContentView: View {
         correctAnswer = Int.random(in: 0...2)
     }
 }
+
+// MARK: - Challenge to add View of 'FlagImage'
+
+struct FlagImage: View {
+    let image: String
+    
+    var body: some View {
+        Image(image)
+            .renderingMode(.original)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(Color.white, lineWidth: 3))
+            .shadow(color: .black, radius: 2)
+    }
+}
+
+// MARK: - Challenge to add a custom ViewModifier (and accompanying View extension)
+// Create a custom ViewModifier (and accompanying View extension) that makes a view have a large, blue font suitable for prominent titles in a view
+
+struct LargeBlueTitle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.title)
+            .foregroundColor(.white)
+            .padding()
+            .background(Color.red)
+            .cornerRadius(20)
+            
+    }
+}
+
+// Now add the extension
+extension View {
+    func BlueTitle() -> some View {
+        self.modifier(LargeBlueTitle())
+    }
+}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

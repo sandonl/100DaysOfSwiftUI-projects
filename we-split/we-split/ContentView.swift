@@ -32,8 +32,7 @@ struct ContentView: View {
     var grandTotal: Double {
         let tipSelection = Double(tipPercentages[tipPercentage])
         let orderAmount = Double(checkAmount) ?? 0
-        
-        
+    
         let tipValue = orderAmount / 100 * tipSelection
         let grandTotal = orderAmount + tipValue
         return grandTotal
@@ -64,6 +63,8 @@ struct ContentView: View {
                 
                 Section (header: Text("Amount including tip")) {
                     Text("$\(grandTotal, specifier: "%.2f")")
+                        // Included Challenge 2
+                        .foregroundColor(tipPercentages[tipPercentage] == 0 ? .red : .none)
                 }
         
                 

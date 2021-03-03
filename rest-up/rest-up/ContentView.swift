@@ -31,7 +31,7 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                     .offset(y: 420)
                     
-                VStack (spacing: 30){
+                VStack (spacing: 20){
                     VStack {
                         Spacer()
                         // Date Picker and time
@@ -42,6 +42,7 @@ struct ContentView: View {
                                    selection: $wakeUp,
                                    displayedComponents:
                                     .hourAndMinute)
+                            .colorInvert()
                             .labelsHidden()
                             .datePickerStyle(WheelDatePickerStyle())
                     }
@@ -71,7 +72,8 @@ struct ContentView: View {
                         }
                         // Challenge: Remove the Button and display as text
                         HorizontalText(text: "Your recommended bedtime is: ", textResult: calculateBedTime())
-                    
+                        
+                        // MARK: - Challenge to remove the button and display as a binding
 //                        Button(action: calculateBedTime) {
 //                            Text("Calculate")
 //                        }.font(.title2)
