@@ -46,7 +46,7 @@ struct ContentView: View {
                     }) {
                         FlagImage(image: self.countries[number])
                     }
-                    // correct flag selections flips the flag horizontally. 
+                    // correct flag selections flips the flag horizontally.
                     .rotation3DEffect(.degrees(self.correctFlag && self.selectedNumber == number ? 360 : 0), axis:(x: 0, y: 1, z: 0))
                     // fades out non-correct flags
                     .opacity(self.fadeOutFlag && self.selectedNumber != number ? 0.25 : 1)
