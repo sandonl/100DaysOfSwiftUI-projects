@@ -9,12 +9,30 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var currentMultiply = 0
+    @State private var gameIsActive = false
+    
+    @State private var resultAlert = false
+    
+    @State private var questions = [Question]()
+    
+   
+    
+    @State private var chosenMultiple = 2
+    
+    @State private var userSelectQuestions = ""
+    
+    @State private var currentQuestion = ""
+    
+    @State private var currentAnswer = ""
     
     @State private var userAnswer = ""
     
-    @State private var isCorrect = false
+    // Alert properties
+    @State private var alertMessage = ""
     
+    @State private var alertTitle = ""
+    
+    var numberOfQuestions = ["5", "10", "15", "20", "All"]
     
     var body: some View {
         NavigationView{
@@ -35,41 +53,129 @@ struct ContentView: View {
                     .rotationEffect(Angle(degrees: 80))
                     .offset(y: 350)
                 
-                
-                
-                VStack {
-                    
-                    Text("Multiply!")
-                    
-                    // Choose current multiply number.
-                    Stepper("Current number:", value: $currentMultiply, in: 0...9)
-                        .labelsHidden()
-                    
-                    // Text to display current multiply number.
-                    Text("Current Multiplication table: \(currentMultiply)")
-                    
-                    // Text Answer for the user
-                    TextField("Enter your answer!", text: $userAnswer)
-                    
-                    HStack{
-                        
-                        // Runs Check answer.
-                        Button("Submit!") {
+                Group {
+                    if !gameIsActive {
+                        VStack {
+                            Section {
+                                // Text to display current multiply number.
+                                Text("Practice which table?:  \(chosenMultiple)")
+                                    .font(.title)
+                                    .foregroundColor(Color.white)
+                                
+                                Stepper("Current number:", value: $chosenMultiple, in: 2...12)
+                                    .labelsHidden()
+                            }
                             
+                            Section {
+                                Text("How many questions?")
+                                    .font(.subheadline)
+                                    .foregroundColor(Color.white)
+                                
+                                Picker("Number of questions", selection: $userSelectQuestions) {
+                                    ForEach(numberOfQuestions, id: \.self) {
+                                        Text($0)
+                                    }
+                                }.pickerStyle(SegmentedPickerStyle())
+                                .colorInvert()
+                                
+                                Button(action: {
+                                    generateQuestions(currentMultiple: chosenMultiple, numberOfQuestions: userSelectQuestions)
+                                    gameIsActive = true
+                                    displayQuestion()
+
+                                }) {
+                                    Text("Start Game")
+                                        // MARK: TODO: - Can turn this into a view
+                                        .padding()
+                                        .background(Color.init(red: 255/255, green: 182/255, blue: 79/255))
+                                        .foregroundColor(Color.white)
+                                        .cornerRadius(20)
+                                        .font(.subheadline)
+                                }
+                            }
+                            
+                        }
+                    } else {
+                        VStack {
+                            
+                            Text(currentQuestion)
+
+                            TextField("Enter your answer!", text: $userAnswer)
+                                .frame(width: 200, height: 200)
+                            
+                            Button(action: {
+                                // runs checkAnswer
+                                checkAnswer()
+                                displayQuestion()
+                            }) {
+                                Text("Guess!")
+                                    .padding()
+                                    .background(Color.init(red: 255/255, green: 182/255, blue: 79/255))
+                                    .cornerRadius(20)
+                                    .font(.subheadline)
+                            }
                         }
                     }
                 }
+
             }
             .navigationTitle("Multiply!")
             .ignoresSafeArea()
         }
     }
-}
+    
+    // Generates the questions to be used
+    func generateQuestions(currentMultiple: Int, numberOfQuestions: String) {
+        
+        var numberToGenerate = 0
+                
+        switch numberOfQuestions {
+        case "All":
+            numberToGenerate = 30
+        default:
+            numberToGenerate = Int(numberOfQuestions) ?? 5
+        }
+        
+        for _ in 1...numberToGenerate {
+            // MARK: TODO - Mght be duplicate questions
+            let i = Int.random(in: 1...12)
+            
+            questions.append(Question(question: "What is \(currentMultiple) x \(i) = ?", answer: String(currentMultiple*i)))
+        }
 
-// Checks the answer given by the user 
-func checkAnswer () {
+    }
+    
+    
+    func displayQuestion() {
+        
+        guard !questions.isEmpty else {
+            gameIsActive = false
+            return
+        }
+        
+        currentQuestion = questions.last?.question ?? "Error."
+        currentAnswer = questions.last?.answer ?? "Error."
+        
+        questions.removeLast()
+        
+    }
+    
+    func checkAnswer() {
+        
+        if userAnswer == currentAnswer {
+            alertMessage = "Correct! Good Job"
+        }
+        
+        
+        
+    }
+    
+    
+    
+    
     
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

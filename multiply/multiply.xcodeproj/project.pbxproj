@@ -11,6 +11,7 @@
 		97018ADA25F1EECD00DEDA56 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97018AD925F1EECD00DEDA56 /* ContentView.swift */; };
 		97018ADC25F1EECD00DEDA56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97018ADB25F1EECD00DEDA56 /* Assets.xcassets */; };
 		97018ADF25F1EECD00DEDA56 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97018ADE25F1EECD00DEDA56 /* Preview Assets.xcassets */; };
+		97018B0A25F46EE000DEDA56 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97018B0925F46EE000DEDA56 /* Question.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		97018ADB25F1EECD00DEDA56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97018ADE25F1EECD00DEDA56 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		97018AE025F1EECD00DEDA56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		97018B0925F46EE000DEDA56 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			children = (
 				97018AD725F1EECD00DEDA56 /* multiplyApp.swift */,
 				97018AD925F1EECD00DEDA56 /* ContentView.swift */,
+				97018B0925F46EE000DEDA56 /* Question.swift */,
 				97018ADB25F1EECD00DEDA56 /* Assets.xcassets */,
 				97018AE025F1EECD00DEDA56 /* Info.plist */,
 				97018ADD25F1EECD00DEDA56 /* Preview Content */,
@@ -139,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97018ADA25F1EECD00DEDA56 /* ContentView.swift in Sources */,
+				97018B0A25F46EE000DEDA56 /* Question.swift in Sources */,
 				97018AD825F1EECD00DEDA56 /* multiplyApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
