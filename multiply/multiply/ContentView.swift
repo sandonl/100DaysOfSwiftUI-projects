@@ -9,14 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     
+    // Game and state related properties
     @State private var gameIsActive = false
     
     @State private var resultAlert = false
     
+    @State private var displayAnimal = ""
+    
     @State private var questions = [Question]()
     
    
-    
+    // Quiz related properties
     @State private var chosenMultiple = 2
     
     @State private var userSelectQuestions = ""
@@ -28,11 +31,20 @@ struct ContentView: View {
     @State private var userAnswer = ""
     
     // Alert properties
+    @State private var showingAlert = false
+    
     @State private var alertMessage = ""
     
     @State private var alertTitle = ""
     
+    // Scoring and Animation
+    @State private var userScore = 0
+    
+    
     var numberOfQuestions = ["5", "10", "15", "20", "All"]
+    
+    // MARK: TODO - Can add more images.
+    let images = ["bear", "buffalo", "chick", "chicken", "cow", "crocodile", "dog", "duck", "elephant", "frog", "hippo"]
     
     var body: some View {
         NavigationView{
@@ -55,12 +67,13 @@ struct ContentView: View {
                 
                 Group {
                     if !gameIsActive {
-                        VStack {
+                        VStack (spacing: 20){
                             Section {
+                                Image("bear")
+                                
                                 // Text to display current multiply number.
                                 Text("Practice which table?:  \(chosenMultiple)")
-                                    .font(.title)
-                                    .foregroundColor(Color.white)
+                                    .titleStyle()
                                 
                                 Stepper("Current number:", value: $chosenMultiple, in: 2...12)
                                     .labelsHidden()
@@ -68,15 +81,18 @@ struct ContentView: View {
                             
                             Section {
                                 Text("How many questions?")
-                                    .font(.subheadline)
+                                    .titleStyle()
                                     .foregroundColor(Color.white)
                                 
                                 Picker("Number of questions", selection: $userSelectQuestions) {
                                     ForEach(numberOfQuestions, id: \.self) {
                                         Text($0)
                                     }
-                                }.pickerStyle(SegmentedPickerStyle())
+                                }
+                                .frame(width: 300, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                .pickerStyle(SegmentedPickerStyle())
                                 .colorInvert()
+                                
                                 
                                 Button(action: {
                                     generateQuestions(currentMultiple: chosenMultiple, numberOfQuestions: userSelectQuestions)
@@ -86,40 +102,49 @@ struct ContentView: View {
                                 }) {
                                     Text("Start Game")
                                         // MARK: TODO: - Can turn this into a view
-                                        .padding()
-                                        .background(Color.init(red: 255/255, green: 182/255, blue: 79/255))
-                                        .foregroundColor(Color.white)
-                                        .cornerRadius(20)
-                                        .font(.subheadline)
+                                        .buttonStyle()
+                                    
                                 }
                             }
                             
                         }
                     } else {
                         VStack {
+                            // MARK: TODO - Add animations 
+                            Image(displayAnimal)
                             
                             Text(currentQuestion)
+                                .titleStyle()
 
-                            TextField("Enter your answer!", text: $userAnswer)
-                                .frame(width: 200, height: 200)
+                            TextField("?", text: $userAnswer)
+                                .titleStyle()
+                                .frame(width: 100, height: 100)
+                                .multilineTextAlignment(.center)
                             
                             Button(action: {
                                 // runs checkAnswer
                                 checkAnswer()
+                                showingAlert = true
                                 displayQuestion()
+                                
                             }) {
                                 Text("Guess!")
-                                    .padding()
-                                    .background(Color.init(red: 255/255, green: 182/255, blue: 79/255))
-                                    .cornerRadius(20)
-                                    .font(.subheadline)
+                                    .buttonStyle()
                             }
+                            // Correct answers will flip the animal around
+                            .rotation3DEffect(.degrees(self.userAnswer == self.currentAnswer ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                            // Incorrect answers will flip the animal down :(
+                            .rotation3DEffect(.degrees(self.userAnswer == self.currentAnswer ? 180 : 0), axis: (x: 1, y: 0, z: 0))
                         }
                     }
+                    
                 }
-
+                
             }
             .navigationTitle("Multiply!")
+            .alert(isPresented: $showingAlert) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("Ok Got it!")))
+            }
             .ignoresSafeArea()
         }
     }
@@ -128,6 +153,8 @@ struct ContentView: View {
     func generateQuestions(currentMultiple: Int, numberOfQuestions: String) {
         
         var numberToGenerate = 0
+        // Counter for other combinations of multiples
+        var i = 2
                 
         switch numberOfQuestions {
         case "All":
@@ -137,43 +164,85 @@ struct ContentView: View {
         }
         
         for _ in 1...numberToGenerate {
-            // MARK: TODO - Mght be duplicate questions
-            let i = Int.random(in: 1...12)
-            
             questions.append(Question(question: "What is \(currentMultiple) x \(i) = ?", answer: String(currentMultiple*i)))
+            i += 1
+            questions.shuffle()
         }
 
     }
     
-    
+    // Displays the next question in the array (works backwards)
     func displayQuestion() {
-        
+        // Game is now over, reset score and messages
         guard !questions.isEmpty else {
             gameIsActive = false
+            showingAlert = true
+            alertMessage = "Game Over! You got \(userScore) out of \(userSelectQuestions) correct"
+            alertTitle = "Game Over!"
+            userScore = 0
             return
         }
         
+        displayAnimal = images.randomElement() ?? "owl"
         currentQuestion = questions.last?.question ?? "Error."
         currentAnswer = questions.last?.answer ?? "Error."
         
+        // Removes the last question from the array
         questions.removeLast()
         
     }
     
     func checkAnswer() {
-        
         if userAnswer == currentAnswer {
-            alertMessage = "Correct! Good Job"
+            alertMessage = "Good Job"
+            alertTitle = "Correct!"
+            userScore += 1
+            
+        } else {
+            alertMessage = "Hmm... not quite! the correct answer was \(currentAnswer)"
+            alertTitle = "Not Quite!"
         }
         
-        
+        // Clears the userAnswer after checking
+        userAnswer = ""
         
     }
-    
-    
-    
-    
-    
+
+}
+
+// Custom View Modifiers
+struct Buttonify: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding()
+            .background(Color.init(red: 255/255, green: 182/255, blue: 79/255))
+            .cornerRadius(20)
+            .font(.title)
+            .foregroundColor(.white)
+            .offset(y: 20)
+    }
+}
+
+
+struct Title: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.title)
+            .foregroundColor(.white)
+            .padding()
+    }
+}
+
+extension View {
+    func titleStyle() -> some View {
+        self.modifier(Title())
+    }
+}
+
+extension View {
+    func buttonStyle() -> some View {
+        self.modifier(Buttonify())
+    }
 }
 
 
