@@ -40,113 +40,133 @@ struct ContentView: View {
     // Scoring and Animation
     @State private var userScore = 0
     
+    @State private var animateImage = false
     
+    // Number of Questions available in picker
     var numberOfQuestions = ["5", "10", "15", "20", "All"]
     
-    // MARK: TODO - Can add more images.
-    let images = ["bear", "buffalo", "chick", "chicken", "cow", "crocodile", "dog", "duck", "elephant", "frog", "hippo"]
+    // Background Colors and Elements
+    let bgColor = Color(red: 138/255, green: 194/255, blue: 255/255)
+    
+    let circleColor = Color(red: 128/255, green: 181/255, blue: 237/255)
+    
+    let rectangleColor = Color(red: 109/255, green: 171/255, blue: 237/255)
+    
+    let images = ["bear", "buffalo", "chick", "chicken", "cow", "crocodile", "dog", "duck", "elephant", "frog", "hippo", "panda", "parrot"]
+    
+    init () {
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+    }
     
     var body: some View {
         NavigationView{
             
-            ZStack {
-                // Background Colour and Background Elements
-                Color(red: 138/255, green: 194/255, blue: 255/255)
-            
-                Circle()
-                    .foregroundColor(Color.init(red: 128/255, green: 181/255, blue: 237/255))
-                    .frame(width: 300, height: 300)
-                    .offset(x: 80, y: 210)
+            Group {
+                ZStack {
+                    // Background Colour and Background Elements
+                    bgColor
+                
+                    Circle()
+                        .foregroundColor(circleColor)
+                        .frame(width: 300, height: 300)
+                        .offset(x: 80, y: 210)
+                        
                     
-                
-                Rectangle()
-                    .foregroundColor(Color(red: 109/255, green: 171/255, blue: 237/255))
-                    .frame(width: 300, height: 500)
-                    .rotationEffect(Angle(degrees: 80))
-                    .offset(y: 350)
-                
-                Group {
-                    if !gameIsActive {
-                        VStack (spacing: 20){
-                            Section {
-                                Image("bear")
+                    Rectangle()
+                        .foregroundColor(rectangleColor)
+                        .frame(width: 300, height: 500)
+                        .rotationEffect(Angle(degrees: 80))
+                        .offset(y: 350)
+                    
+                    Group {
+                        if !gameIsActive {
+                            VStack (spacing: 20){
+                                Section {
+                                    Image("bear")
+                                    
+                                    // Text to display current multiply number.
+                                    Text("Practice which table?:  \(chosenMultiple)")
+                                        .titleStyle()
+                                    
+                                    Stepper("Current number:", value: $chosenMultiple, in: 2...12)
+                                        .labelsHidden()
+                                        
+                                }
                                 
-                                // Text to display current multiply number.
-                                Text("Practice which table?:  \(chosenMultiple)")
-                                    .titleStyle()
-                                
-                                Stepper("Current number:", value: $chosenMultiple, in: 2...12)
-                                    .labelsHidden()
-                            }
-                            
-                            Section {
-                                Text("How many questions?")
-                                    .titleStyle()
-                                    .foregroundColor(Color.white)
-                                
-                                Picker("Number of questions", selection: $userSelectQuestions) {
-                                    ForEach(numberOfQuestions, id: \.self) {
-                                        Text($0)
+                                Section {
+                                    Text("How many questions?")
+                                        .titleStyle()
+                                        .foregroundColor(Color.white)
+                                    
+                                    Picker("Number of questions", selection: $userSelectQuestions) {
+                                        ForEach(numberOfQuestions, id: \.self) {
+                                            Text($0)
+                                        }
+                                    }
+                                    .frame(width: 300, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                    .pickerStyle(SegmentedPickerStyle())
+                                    .colorInvert()
+                                    
+                                    
+                                    Button(action: {
+                                        generateQuestions(currentMultiple: chosenMultiple, numberOfQuestions: userSelectQuestions)
+                                        gameIsActive = true
+                                        displayQuestion()
+
+                                    }) {
+                                        Text("Start Game")
+                                            .buttonStyle()
+                                        
                                     }
                                 }
-                                .frame(width: 300, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                .pickerStyle(SegmentedPickerStyle())
-                                .colorInvert()
                                 
+                            }
+                        } else {
+                            VStack {
+                                // MARK: TODO - Add animations
+                                Image(displayAnimal)
+                                    // Correct answers will flip the animal around
+                                .rotation3DEffect(.degrees((self.userAnswer == self.currentAnswer) && animateImage ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                                
+                                
+                                Text(currentQuestion)
+                                    .titleStyle()
+
+                                TextField("?", text: $userAnswer)
+                                    .frame(width: 100, height: 60)
+                                    .textBox()
+                                    .titleStyle()
+                                    
+                                    
                                 
                                 Button(action: {
-                                    generateQuestions(currentMultiple: chosenMultiple, numberOfQuestions: userSelectQuestions)
-                                    gameIsActive = true
-                                    displayQuestion()
-
-                                }) {
-                                    Text("Start Game")
-                                        // MARK: TODO: - Can turn this into a view
-                                        .buttonStyle()
                                     
+                                    withAnimation {
+                                        animateImage.toggle()
+                                    }
+                                    checkAnswer()
+                                    showingAlert = true
+                                    displayQuestion()
+                                    
+                                }) {
+                                    Text("Guess!")
+                                        .buttonStyle()
                                 }
-                            }
-                            
-                        }
-                    } else {
-                        VStack {
-                            // MARK: TODO - Add animations 
-                            Image(displayAnimal)
-                            
-                            Text(currentQuestion)
-                                .titleStyle()
-
-                            TextField("?", text: $userAnswer)
-                                .titleStyle()
-                                .frame(width: 100, height: 100)
-                                .multilineTextAlignment(.center)
-                            
-                            Button(action: {
-                                // runs checkAnswer
-                                checkAnswer()
-                                showingAlert = true
-                                displayQuestion()
                                 
-                            }) {
-                                Text("Guess!")
-                                    .buttonStyle()
                             }
-                            // Correct answers will flip the animal around
-                            .rotation3DEffect(.degrees(self.userAnswer == self.currentAnswer ? 360 : 0), axis: (x: 0, y: 1, z: 0))
-                            // Incorrect answers will flip the animal down :(
-                            .rotation3DEffect(.degrees(self.userAnswer == self.currentAnswer ? 180 : 0), axis: (x: 1, y: 0, z: 0))
                         }
+                        
                     }
                     
                 }
-                
+                .navigationTitle("Multiply!")
+                .alert(isPresented: $showingAlert) {
+                    Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("Ok Got it!")))
+                }
+                .ignoresSafeArea()
             }
-            .navigationTitle("Multiply!")
-            .alert(isPresented: $showingAlert) {
-                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("Ok Got it!")))
-            }
-            .ignoresSafeArea()
         }
+            
     }
     
     // Generates the questions to be used
@@ -217,7 +237,8 @@ struct Buttonify: ViewModifier {
             .padding()
             .background(Color.init(red: 255/255, green: 182/255, blue: 79/255))
             .cornerRadius(20)
-            .font(.title)
+            .shadow(radius: 1, x: 0.0, y: 1)
+            .font(.system(size: 30, weight: .heavy, design: .default))
             .foregroundColor(.white)
             .offset(y: 20)
     }
@@ -227,9 +248,28 @@ struct Buttonify: ViewModifier {
 struct Title: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.title)
+            .font(.system(size: 25, weight: .heavy, design: .default))
             .foregroundColor(.white)
             .padding()
+    }
+}
+
+struct TextBox: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .border(Color(red: 164, green: 165, blue: 166))
+            .background(Color(red: 206, green: 213, blue: 224))
+            .foregroundColor(.black)
+            .multilineTextAlignment(.center)
+            .cornerRadius(20)
+            .keyboardType(.decimalPad)
+            
+    }
+}
+
+extension View {
+    func textBox() -> some View {
+        self.modifier(TextBox())
     }
 }
 
